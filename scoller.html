@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script src="http://new-icon.ol-img.com/jslib/jquery-1.7.2.min.js"></script>
+	<script src="js/mousewheel.js"></script>
+	<script src="js/scrollable.js"></script>
+	<style type="text/css">
+	.a{width:300px;height: 300px;overflow: hidden;position: relative;border: 2px solid #cccccc;}
+	.b{width: 5000px;height: 300px;background: #eeeeee;position: absolute;left: 0;top: 0;}
+
+	.c{width: 300px;height: 30px;background-color: #333;position: relative;border: 2px solid #cccccc;}
+	.d{position: absolute;left: 0;top: 0;width:30px;height: 30px;background: #666;}
+	</style>
+</head>
+<body>
+	<div class="a" id="a">
+		<div class="b" id="b">http://url.cn/DrmNrk 0x0p+0ppmsgid%3D10000064 0temidx%3D2%23wechat_redirect&version=240200c0&lang=zh_CN&devicetype=android-8&from=&isappinstalled=0http://mp.weixin.qq.com/mp/appmsg/show?__biz=MjM5MjUxOTk0MA==&appmsgid=10000027&itemidx=1&from=timeline&isappinstalled=0&uin=MjQwOTUyMTQ4MA%3D%3D&key=b1399f5599246e474527e707fbe6e281c36bfd0887adcfb7188df01a0ffd7f77c76318323ea2c9e071e2e7eaa0c0c8d9e29576e6d2215952587b546a09cbcfbc7f23d454f2960289bc7576a80f3afb2dd0255c8549da7f4e41c0e14361674eb92501ea42957401bf8d54d9529211a548b4f58fd8f78f2f7ffc85d2d3961a2c8d&devicetype=android-10&version=240500fd</div>
+	</div>
+	<div class="c" id="c">
+		<div class="d"></div>
+	</div>
+	<script type="text/javascript">
+(function($) {
+	
+	// static constructs
+	$.tools = $.tools || {version: '@VERSION'};
+	
+	$.tools.scrollbar = {
+		conf: {	
+			viewport:'',
+			wall:''
+		} 
+	};
+	function ScrollBar(root,conf){
+		var self = this,
+		scroll = root,
+		bar = root.children(),
+		viewport = $(conf.viewport),
+		wall = $(conf.wall),
+
+		viewport_w = viewport.width(),
+		wall_w = wall.width(),
+		r = viewport_w/wall_w;
+		scroll_w = scroll.width();
+		bar.css('width',scroll_w*r);
+		document.body.onselectstart = function(){return false};
+		$.extend(self,{
+
+		})
+		var startX = 0,barClick = false,barLeft = 0,wallLeft = 0;
+		bar.mousedown(function(e){
+			startX = e.pageX;
+			barClick = true;
+			barLeft = parseInt(bar.css("left"));
+			wallLeft = parseInt(wall.css("left"));
+			
+		});
+		$(document).mouseup(function(){
+			barClick = false;
+		});
+		$(document).mousemove(function(e){
+			if(!barClick) return;
+			var e = e || event;
+			var offset = e.pageX - startX;
+			var _barLeft = barLeft+offset;
+			var _wallLeft = wallLeft-wall_w*offset/scroll_w;
+			if(_barLeft<0) _barLeft = 0;
+			if(_barLeft>scroll_w-scroll_w*r) _barLeft = scroll_w-scroll_w*r;
+			if(_wallLeft>0) _wallLeft = 0;
+			if(_wallLeft<(viewport_w-wall_w)) _wallLeft = viewport_w-wall_w;
+			bar.css("left",_barLeft);
+			wall.css("left",_wallLeft);
+		})
+	}
+	$.fn.scrollbar = function(conf) { 
+			
+		// already constructed --> return API
+		var el = this.data("scrollbar");
+		if (el) { return el; }		 
+
+		conf = $.extend({}, $.tools.scrollbar.conf, conf); 
+		
+		this.each(function() {			
+			el = new ScrollBar($(this), conf);
+			$(this).data("scrollbar", el);	
+		});
+		
+		return conf.api ? el: this; 
+		
+	};
+})(jQuery)	
+$("#c").scrollbar({viewport:"#a",wall:"#b"});
+	</script>
+</body>
+</html>
