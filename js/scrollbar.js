@@ -27,6 +27,7 @@
 		function init(){
 			viewport_w = viewport.width(),
 			wall_w = wall.width()+conf.offset,
+			console.log("viewport_w"+viewport_w+" wall_w"+wall_w);
 			r = viewport_w/wall_w,
 			scroll_w = scroll.width();
 			r>1?r=1:r=r;
@@ -46,7 +47,7 @@
 		$(document).mouseup(function(){
 			barClick = false;
 		});
-		$(document).mousemove(function(e){
+		$(document).mousemove(function(e){  
 			if(!barClick) return;
 			var e = e || event;
 			var offset = e.pageX - startX;
